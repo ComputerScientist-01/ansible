@@ -1,0 +1,6 @@
+---
+ - name: download the package from nexus
+  hosts: all
+  tasks:
+  - name: execute the script to download the package
+    command : sh home/build/scripts/DownloadfromNexus.sh
