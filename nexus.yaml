@@ -1,0 +1,18 @@
+---
+- name: Download the package from Nexus
+  hosts: all
+  vars:
+    vault_path: "secret/nexus"
+  tasks:
+    - name: Fetch credentials from Vault
+      set_fact:
+        nexus_username: "{{ lookup('hashi_vault', vault_path + '/username') }}"
+        nexus_password: "{{ lookup('hashi_vault', vault_path + '/password') }}"
+
+    - name: Execute the script to download package
+      command: >
+        sh /ds/dt6c/data/dt6c02/dpr_corb3_uat_02/scripts/AJ/DownloadFromNexus.sh
+        {{ build }}
+      environment:
+        NEXUS_USERNAME: "{{ nexus_username }}"
+        NEXUS_PASSWORD: "{{ nexus_password }}"
