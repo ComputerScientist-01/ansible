@@ -1,0 +1,17 @@
+---
+- name: Debug HashiCorp Vault Lookup
+  hosts: localhost
+  vars:
+    vault_path: "secret/nexus"
+  tasks:
+    - name: Debug Vault Token
+      debug:
+        msg: "Vault token is: {{ lookup('env', 'HASHI_VAULT_TOKEN') }}"
+
+    - name: Fetch username from Vault
+      debug:
+        msg: "Vault username: {{ lookup('hashi_vault', vault_path + '/username', token=lookup('env', 'HASHI_VAULT_TOKEN')) }}"
+
+    - name: Fetch password from Vault
+      debug:
+        msg: "Vault password: {{ lookup('hashi_vault', vault_path + '/password', token=lookup('env', 'HASHI_VAULT_TOKEN')) }}"
