@@ -6,8 +6,8 @@
   tasks:
     - name: Fetch credentials from Vault
       set_fact:
-        nexus_username: "{{ lookup('hashi_vault', vault_path + '/username') }}"
-        nexus_password: "{{ lookup('hashi_vault', vault_path + '/password') }}"
+      nexus_username: "{{ lookup('hashi_vault', vault_path + '/username', token=lookup('env', 'HASHI_VAULT_TOKEN')) }}"
+      nexus_password: "{{ lookup('hashi_vault', vault_path + '/password', token=lookup('env', 'HASHI_VAULT_TOKEN')) }}"
 
     - name: Execute the script to download package
       command: >
@@ -16,3 +16,5 @@
       environment:
         NEXUS_USERNAME: "{{ nexus_username }}"
         NEXUS_PASSWORD: "{{ nexus_password }}"
+
+
