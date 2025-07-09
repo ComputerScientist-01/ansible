@@ -1,0 +1,76 @@
+import sys
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QLabel, QPushButton, QVBoxLayout,
+    QComboBox, QLineEdit, QMessageBox
+)
+
+credentials = {
+    "Gmail": {"username": "your.email@gmail.com", "password": "gmail_password123"},
+    "GitHub": {"username": "yourgithub", "password": "github_pass"},
+    "Facebook": {"username": "your.fb.name", "password": "fb_pass_456"},
+}
+
+class PasswordManager(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Password Manager")
+        self.setGeometry(100, 100, 400, 220)
+
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
+        self.account_selector = QComboBox()
+        self.account_selector.addItems(credentials.keys())
+
+        layout.addWidget(QLabel("Select Account:"))
+        layout.addWidget(self.account_selector)
+
+        self.copy_user_btn = QPushButton("Copy Username")
+        self.copy_pass_btn = QPushButton("Copy Password")
+
+        self.copy_user_btn.clicked.connect(self.copy_username)
+        self.copy_pass_btn.clicked.connect(self.copy_password)
+
+        layout.addWidget(self.copy_user_btn)
+        layout.addWidget(self.copy_pass_btn)
+
+        layout.addWidget(QLabel("Update Password:"))
+        self.password_input = QLineEdit()
+        self.password_input.setPlaceholderText("New password")
+        self.password_input.setEchoMode(QLineEdit.Password)
+        layout.addWidget(self.password_input)
+
+        self.update_btn = QPushButton("Update Password")
+        self.update_btn.clicked.connect(self.update_password)
+        layout.addWidget(self.update_btn)
+
+        self.status_label = QLabel("")
+        layout.addWidget(self.status_label)
+
+    def copy_username(self):
+        account = self.account_selector.currentText()
+        username = credentials[account]["username"]
+        QApplication.clipboard().setText(username)
+        self.status_label.setText("Username copied!")
+
+    def copy_password(self):
+        account = self.account_selector.currentText()
+        password = credentials[account]["password"]
+        QApplication.clipboard().setText(password)
+        self.status_label.setText("Password copied!")
+
+    def update_password(self):
+        account = self.account_selector.currentText()
+        new_pass = self.password_input.text().strip()
+        if not new_pass:
+            QMessageBox.warning(self, "Error", "Password cannot be empty.")
+            return
+        credentials[account]["password"] = new_pass
+        self.password_input.clear()
+        self.status_label.setText(f"Password for {account} updated!")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = PasswordManager()
+    window.show()
+    sys.exit(app.exec_())
